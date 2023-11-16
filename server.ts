@@ -12,7 +12,7 @@ if (!process.env.TGPINGBOTUSERS) {
   process.exit(1);
 }
 
-const INTERVAL = 60 * 1000;
+const INTERVAL = 60 * 60 * 1000; //1h
 const validUsers = new Set(process.env.TGPINGBOTUSERS?.split(','));
 const bot = new TelegramBot(process.env.TGPINGBOT, { polling: true });
 
@@ -48,6 +48,7 @@ const task = async (chatId: number, notifyOffline = false): Promise<boolean> => 
     isJobRunning = true;
     const sites = await readSites('./sites.list');
     for await (const url of sites) {
+      console.debug(`test ${url}`);
       const result = await isOnline(url);
       if (result) {
         sendMessage(chatId, `${url} is online!`);
@@ -80,6 +81,7 @@ bot.addListener('polling_error', (e) => {
 
 bot.onText(/\/start/, (msg) => {
   if (isValidUsser(msg)) {
+    clearInterval(intervalId);
     intervalId = setInterval(() => task(msg.chat.id), INTERVAL);
     sendMessage(msg.chat.id, `Task was started!`);
   }

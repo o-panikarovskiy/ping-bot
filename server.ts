@@ -2,8 +2,18 @@ import axios from 'axios';
 import { readFile } from 'fs/promises';
 import TelegramBot from 'node-telegram-bot-api';
 
+if (!process.env.TGPINGBOT) {
+  console.error('TGPINGBOT is not set!');
+  process.exit(1);
+}
+
+if (!process.env.TGPINGBOTUSERS) {
+  console.error('TGPINGBOTUSERS is not set!');
+  process.exit(1);
+}
+
 const INTERVAL = 60 * 1000;
-const validUsers = new Set(process.env.TGPINGBOTUSERS.split(','));
+const validUsers = new Set(process.env.TGPINGBOTUSERS?.split(','));
 const bot = new TelegramBot(process.env.TGPINGBOT, { polling: true });
 
 let isJobRunning = false;

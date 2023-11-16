@@ -90,7 +90,14 @@ bot.onText(/\/start/, (msg) => {
 bot.onText(/\/stop/, (msg) => {
   if (isValidUsser(msg)) {
     clearInterval(intervalId);
+    intervalId = null;
     sendMessage(msg.chat.id, `Task was stopped!`);
+  }
+});
+
+bot.onText(/\/status/, (msg) => {
+  if (isValidUsser(msg)) {
+    sendMessage(msg.chat.id, intervalId ? `Task is running` : 'Task stoped');
   }
 });
 
